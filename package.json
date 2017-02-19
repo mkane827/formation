@@ -102,7 +102,6 @@
     "style-loader": "0.13.x",
     "susy": "2.2.x",
     "svg-sprite-loader": "0.1.x",
-    "svg-url-loader": "1.1.x",
     "url-loader": "0.5.x",
     "webpack": "2.x",
     "webpack-dev-server": "2.x",

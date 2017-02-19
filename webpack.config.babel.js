@@ -3,17 +3,20 @@
 // -----------------------------------------------------------------------------
 'use strict';
 
-const autoprefixer = require('autoprefixer');
-const bourbon = require('bourbon');
-const bourbonNeat = require('bourbon-neat');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-const formationJson = require('@darkobits/formation/package.json');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const packageJson = require('./package.json');
-const resolve = require('path').resolve;
-const SassLintPlugin = require('sasslint-webpack-plugin');
-const VisualizerWebpackPlugin = require('webpack-visualizer-plugin');
-const webpack = require('webpack');
+import autoprefixer from 'autoprefixer';
+
+import bourbon from 'bourbon';
+import bourbonNeat from 'bourbon-neat';
+import ExtractTextWebpackPlugin from 'extract-text-webpack-plugin';
+import formationJson from '@darkobits/formation/package.json';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import packageJson from './package.json';
+import path from 'path';
+import SassLintPlugin from 'sasslint-webpack-plugin';
+import VisualizerWebpackPlugin from 'webpack-visualizer-plugin';
+import webpack from 'webpack';
+
+const resolve = path.resolve;
 
 const CONTEXT = resolve(__dirname, 'src');
 const MODULE_NAME = packageJson.name;
@@ -22,11 +25,10 @@ const VERSION = packageJson.version;
 const extractSass = new ExtractTextWebpackPlugin({
   filename: '[name].[contenthash].css',
   allChunks: true
-  // disable: process.env.NODE_ENV === "development"
 });
 
 
-module.exports = env => {
+export default env => {
   const config = {};
 
 
@@ -186,6 +188,7 @@ module.exports = env => {
 
   // ----- Module Resolving ----------------------------------------------------
 
+  // Resolve modules from the build context and node_modules.
   config.resolve = {
     modules: [
       CONTEXT,
@@ -213,6 +216,7 @@ module.exports = env => {
   }));
 
 
+  // Put any common modules in the vendor bundle.
   config.plugins.push(new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor'
   }));
@@ -242,13 +246,13 @@ module.exports = env => {
       'env.NODE_ENV': env.dist ? '"production"' : '"development"'
     },
     webpack: {
+      // Define build environment.
+      ENV: env.dist ? '"dist"' : env.test ? '"test"' : '"local"',
+      FORMATION_VERSION: `"${formationJson.version}"`,
       // Expose name from package.json.
       MODULE_NAME: `"${MODULE_NAME}"`,
       // Expose version from package.json.
-      VERSION: `"${VERSION}"`,
-      FORMATION_VERSION: `"${formationJson.version}"`,
-      // Define build environment.
-      ENV: env.dist ? '"dist"' : env.test ? '"test"' : '"local"'
+      VERSION: `"${VERSION}"`
     }
   }));
 
