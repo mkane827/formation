@@ -7,6 +7,7 @@ const autoprefixer = require('autoprefixer');
 const bourbon = require('bourbon');
 const bourbonNeat = require('bourbon-neat');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const formationJson = require('@darkobits/formation/package.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const packageJson = require('./package.json');
 const resolve = require('path').resolve;
@@ -245,6 +246,7 @@ module.exports = env => {
       MODULE_NAME: `"${MODULE_NAME}"`,
       // Expose version from package.json.
       VERSION: `"${VERSION}"`,
+      FORMATION_VERSION: `"${formationJson.version}"`,
       // Define build environment.
       ENV: env.dist ? '"dist"' : env.test ? '"test"' : '"local"'
     }
