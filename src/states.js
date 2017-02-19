@@ -13,7 +13,7 @@ app.config(($locationProvider, $stateProvider, $urlRouterProvider) => {
     name: 'Base',
     url: '/',
     views: {
-      'main': {
+      main: {
         component: mainComponent
       }
     }

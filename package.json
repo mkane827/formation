@@ -9,19 +9,54 @@
       "email": "joshua@frontlawn.net"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darkobits/formation.git"
+  },
   "engines": {
     "npm": ">=3.0.0",
     "node": ">=6.x"
   },
   "scripts": {
-    "start": "npm run clean && webpack-dev-server --env.local",
-    "lint:js": "eslint .",
-    "lint:sass": "sass-lint --verbose --no-exit",
-    "lint": "npm-run-all --parallel lint:*",
     "clean": "rimraf dist",
+    "lint:js": "xo",
+    "lint:sass": "sass-lint --verbose --no-exit",
+    "lint": "run-p lint:*",
     "build": "npm run clean && webpack --env.dist --progress",
     "deploy": "git push origin `git subtree split --prefix dist`:gh-pages --force",
-    "precommit": "npm run lint"
+    "precommit": "run-s lint build && git add dist/",
+    "start": "webpack-dev-server --env.local"
+  },
+  "xo": {
+    "env": "jest",
+    "space": true,
+    "rules": {
+      "import/default": "off",
+      "import/extensions": "off",
+      "import/named": "off",
+      "import/namespace": "off",
+      "import/no-absolute-path": "off",
+      "import/no-extraneous-dependencies": "off",
+      "import/no-named-as-default": "off",
+      "import/no-named-as-default-member": "off",
+      "import/no-unassigned-import": "off",
+      "import/no-unresolved": "off",
+      "import/order": "off",
+      "max-params": "off",
+      "no-multiple-empty-lines": "off",
+      "space-before-function-paren": [
+        "error", {"named": "always"}
+      ],
+      "unicorn/filename-case": "off"
+    },
+    "globals": ["webpack"],
+    "settings": {
+      "import/resolver": "webpack"
+    },
+    "ignores": [
+      "jsdoc-theme/**",
+      "coverage/**"
+    ]
   },
   "dependencies": {
     "@darkobits/formation": "latest",
@@ -44,9 +79,7 @@
     "bourbon": "4.2.x",
     "bourbon-neat": "1.8.x",
     "css-loader": "0.26.x",
-    "eslint": "3.12.x",
-    "eslint-loader": "1.5.x",
-    "eslint-plugin-angular": "1.3.x",
+    "eslint-import-resolver-webpack": "^0.8.1",
     "extract-text-webpack-plugin": "2.0.0-rc.3",
     "favicons-webpack-plugin": "0.0.x",
     "file-loader": "0.9.x",
@@ -56,7 +89,7 @@
     "ng-annotate-loader": "0.1.x",
     "ngtemplate-loader": "1.3.x",
     "node-sass": "3.8.x",
-    "npm-run-all": "2.2.x",
+    "npm-run-all": "4.x",
     "phantomjs-prebuilt": "2.1.x",
     "postcss-loader": "1.3.x",
     "prismjs": "1.6.x",
@@ -73,6 +106,8 @@
     "url-loader": "0.5.x",
     "webpack": "2.x",
     "webpack-dev-server": "2.x",
-    "webpack-visualizer-plugin": "0.1.x"
+    "webpack-visualizer-plugin": "0.1.x",
+    "xo": "0.17.x",
+    "xo-loader": "0.7.x"
   }
 }

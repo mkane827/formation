@@ -5,10 +5,6 @@ import ngAnimate from 'angular-animate';
 import uiRouter from 'angular-ui-router';
 import Formation from '@darkobits/formation';
 
-// Import ngMessages so it will be available to Formation. This is analagous to
-// a "peer dependency" and must be done here
-import 'angular-messages';
-
 
 const app = angular.module('App', [
   'ngMockE2E',

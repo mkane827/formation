@@ -3,24 +3,20 @@
 // -----------------------------------------------------------------------------
 'use strict';
 
-const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SassLintPlugin = require('sasslint-webpack-plugin');
-const VisualizerWebpackPlugin = require('webpack-visualizer-plugin');
-
-const packageJson = require('./package.json');
-const resolve = require('path').resolve;
-
 const bourbon = require('bourbon');
 const bourbonNeat = require('bourbon-neat');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const packageJson = require('./package.json');
+const resolve = require('path').resolve;
+const SassLintPlugin = require('sasslint-webpack-plugin');
+const VisualizerWebpackPlugin = require('webpack-visualizer-plugin');
+const webpack = require('webpack');
 
 const CONTEXT = resolve(__dirname, 'src');
 const MODULE_NAME = packageJson.name;
 const VERSION = packageJson.version;
-
-
 
 const extractSass = new ExtractTextWebpackPlugin({
   filename: '[name].[contenthash].css',
@@ -71,7 +67,7 @@ module.exports = env => {
     exclude: /node_modules/,
     use: [
       {
-        loader: 'eslint-loader',
+        loader: 'xo-loader',
         options: {
           // Exit on error when compiling.
           failOnError: env.dist
@@ -267,7 +263,7 @@ module.exports = env => {
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
-        dead_code: true
+        dead_code: true // eslint-disable-line camelcase
       },
       mangle: true,
       output: {

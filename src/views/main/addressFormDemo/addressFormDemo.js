@@ -297,7 +297,6 @@ app.component('addressFormDemo', {
 
 
     vm.submit = modelValues => {
-
       /**
        * We can do additional client-side validation here, like checking for
        * inter-model validity (ex: did the user enter the correct postal code for
@@ -314,8 +313,8 @@ app.component('addressFormDemo', {
         // Request was successful.
         $log.info('[AddressForm] Got API response:', response);
       })
-      .catch(response => {
-        $log.log('[AddressForm] Got API error:', response);
+      .catch(err => {
+        $log.log('[AddressForm] Got API error:', err);
 
         /**
          * Let's assume that when this API responds with a "fields" object in the
@@ -328,19 +327,13 @@ app.component('addressFormDemo', {
           apiErrors: 'An unknown error has occurred.'
         };
 
-        return R.pathOr(alternativeError, ['data', 'fields'], response);
+        return R.pathOr(alternativeError, ['data', 'fields'], err);
       });
     };
 
     vm.isFormDisabled = () => {
       return vm.disableForm;
     };
-
-
-    window.getForm = () => {
-      return vm.addressForm;
-    };
-
 
     vm.reset = () => {
       vm.addressForm.reset({

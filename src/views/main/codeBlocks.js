@@ -93,7 +93,7 @@ export default {
             validators: {
               required,
               // Require a valid U.S. postal code on this field.
-              pattern: pattern(/(\\d{5}([\-]\\d{4})?)/g)
+              pattern: pattern(/(\\d{5}([-]\\d{4})?)/g)
             },
             errors: [
               ['required', 'This field is required.'],
