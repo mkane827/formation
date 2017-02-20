@@ -15,7 +15,7 @@ export default {
         show-errors-on="touched, submitted"
         on-submit="vm.submit">
         <div>
-          <fm-input type="text" name="name">Name</fm-input>
+          <fm-input name="name">Name</fm-input>
           <fm-errors for="name"></fm-errors>
         </div>
         <div>
