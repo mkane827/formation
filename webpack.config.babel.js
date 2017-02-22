@@ -4,7 +4,6 @@
 'use strict';
 
 import autoprefixer from 'autoprefixer';
-
 import bourbon from 'bourbon';
 import bourbonNeat from 'bourbon-neat';
 import ExtractTextWebpackPlugin from 'extract-text-webpack-plugin';
@@ -21,11 +20,6 @@ const resolve = path.resolve;
 const CONTEXT = resolve(__dirname, 'src');
 const MODULE_NAME = packageJson.name;
 const VERSION = packageJson.version;
-
-const extractSass = new ExtractTextWebpackPlugin({
-  filename: '[name].[contenthash].css',
-  allChunks: true
-});
 
 
 export default env => {
@@ -64,75 +58,95 @@ export default env => {
 
 
   // JavaScript: Lint source and emit errors to the browser console/terminal.
+
+  const xoLoader = {
+    loader: 'xo-loader',
+    options: {
+      // Exit on error when compiling.
+      failOnError: env.dist
+    }
+  };
+
   config.module.rules.push({
     enforce: 'pre',
     test: /\.(m)?js$/,
     exclude: /node_modules/,
     use: [
-      {
-        loader: 'xo-loader',
-        options: {
-          // Exit on error when compiling.
-          failOnError: env.dist
-        }
-      }
+      xoLoader
     ]
   });
 
 
   // JavaScript: Transpile and annotate.
+
+  const babelLoader = {
+    loader: 'babel-loader'
+  };
+
+  const ngAnnotateLoader = {
+    loader: 'ng-annotate-loader',
+    options: {
+      add: true
+    }
+  };
+
   config.module.rules.push({
     test: /\.(m)?js$/,
     exclude: /node_modules/,
     use: [
-      {
-        loader: 'ng-annotate-loader',
-        options: {
-          add: true
-        }
-      },
-      {
-        loader: 'babel-loader'
-      }
+      ngAnnotateLoader,
+      babelLoader
     ]
   });
 
 
   // Sass: Compile, add PostCSS transforms, emit to ExtractText.
+
+  const sassLoader = {
+    loader: 'sass-loader',
+    options: {
+      sourceMap: true,
+      includePaths: [
+        CONTEXT,
+        resolve(CONTEXT, 'etc', 'style'),
+        'node_modules'
+      ]
+      .concat(bourbon.includePaths)
+      .concat(bourbonNeat.includePaths)
+    }
+  };
+
+  const postCssLoader = {
+    loader: 'postcss-loader',
+    options: {
+      plugins () {
+        return [
+          autoprefixer
+        ];
+      }
+    }
+  };
+
+  const cssLoader = {
+    loader: 'css-loader',
+    options: {
+      sourceMap: true,
+      minimize: true
+    }
+  };
+
+  const extractSass = new ExtractTextWebpackPlugin({
+    filename: '[name].[contenthash].css',
+    allChunks: true
+  });
+
   config.module.rules.push({
     test: /\.(c|sc|sa)ss$/,
     use: extractSass.extract({
       use: [
-        {
-          loader: 'css-loader',
-          options: {
-            sourceMap: true,
-            minimize: true
-          }
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            plugins () {
-              return [
-                autoprefixer
-              ];
-            }
-          }
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-            includePaths: [
-              CONTEXT,
-              resolve(CONTEXT, 'etc', 'style'),
-              'node_modules'
-            ]
-            .concat(bourbon.includePaths)
-            .concat(bourbonNeat.includePaths)
-          }
-        }
+        cssLoader,
+        postCssLoader,
+        sassLoader
       ]
     })
   });
@@ -140,48 +154,59 @@ export default env => {
 
   // Static assets: Inline anything under 10k, otherwise emit a file in the
   // output directory and return a URL pointing to it.
+
+  const urlLoader = {
+    loader: 'url-loader',
+    options: {
+      limit: 10000
+    }
+  };
+
   config.module.rules.push({
     test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
     use: [
-      {
-        loader: 'url-loader',
-        options: {
-          limit: 10000
-        }
-      }
+      urlLoader
+
     ]
   });
 
 
+  const svgSpriteLoader = {
+    loader: 'svg-sprite-loader'
+  };
+
   config.module.rules.push({
     test: /\.svg$/,
     use: [
-      {
-        loader: 'svg-sprite-loader'
-      }
+      svgSpriteLoader
     ]
   });
 
 
   // HTML (templates): Add to the Angular Template Cache and return a URL
   // pointing to the template.
+
+  const ngTemplateLoader = {
+    loader: 'ngtemplate-loader',
+    options: {
+      requireAngular: true,
+      relativeTo: CONTEXT,
+      prefix: MODULE_NAME
+    }
+  };
+
+  const htmlLoader = {
+    loader: 'html-loader'
+  };
+
   config.module.rules.push({
     test: /\.html$/,
     exclude: [
       resolve(CONTEXT, 'index.html')
     ],
     use: [
-      {
-        loader: 'ngtemplate-loader',
-        options: {
-          requireAngular: true,
-          relativeTo: CONTEXT,
-          prefix: MODULE_NAME
-        }
-      },
-      {
-        loader: 'html-loader'
-      }
+      ngTemplateLoader,
+      htmlLoader
     ]
   });
 
