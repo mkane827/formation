@@ -7,13 +7,31 @@ import {
   pattern
 } from '@darkobits/formation/etc/validators';
 
+import {
+  onReady
+} from '@darkobits/formation/etc/utils';
+
 import templateUrl from './addressFormDemo.html';
 
 
 app.component('addressFormDemo', {
   controllerAs: 'vm',
-  controller: function ($log, Api) {
+  controller: function ($log, $q, $scope, Api) {
     const vm = this;
+
+    vm.$onInit = () => {
+      $q.all({
+        form: onReady(vm, 'addressForm'),
+        response: Api.req({
+          method: 'GET',
+          url: '/api'
+        })
+      })
+      .then(({form, response: {data}}) => {
+        form.setModelValues(data);
+      });
+    };
+
 
     vm.controls = {
       name: {
@@ -55,6 +73,7 @@ app.component('addressFormDemo', {
         ]
       }
     };
+
 
     vm.states = [
       {
@@ -331,9 +350,11 @@ app.component('addressFormDemo', {
       });
     };
 
+
     vm.isFormDisabled = () => {
       return vm.disableForm;
     };
+
 
     vm.reset = () => {
       vm.addressForm.reset({

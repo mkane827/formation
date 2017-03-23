@@ -21,12 +21,13 @@ app.run($httpBackend => {
 
   // Request handler.
   const handleRequest = (method, url, data) => {
-    data = JSON.parse(data);
+    // const parsedData = typeof data === 'string' ? JSON.parse(data) : null;
+
     console.log('[Api] Got data:', data);
 
     // If request matches a key in the map, return the corresponding response.
     for (const [req, res] of responses.entries()) {
-      if (R.equals({method, url, data}, req)) {
+      if (R.equals({method, url, data}, Object.assign({}, req, {data: undefined}))) {
         return res;
       }
     }
@@ -40,6 +41,17 @@ app.run($httpBackend => {
 
 
   /* ----- Responses -------------------------------------------------------- */
+
+  responses.set({
+    method: 'GET',
+    url: '/api'
+  }, buildResponse({
+    status: 200,
+    data: {
+      name: 'Frodo Baggins'
+    }
+  }));
+
 
   responses.set({
     method: 'POST',

@@ -18,17 +18,20 @@
     "node": ">=6.x"
   },
   "scripts": {
-    "clean": "rimraf dist",
     "lint:js": "xo",
     "lint:sass": "sass-lint --verbose --no-exit",
     "lint": "run-p lint:*",
-    "build": "npm run clean && webpack --env.dist --progress",
+    "prebuild": "rimraf dist",
+    "build": "webpack --env.dist --progress",
     "deploy": "git push origin `git subtree split --prefix dist`:gh-pages --force",
     "precommit": "run-s lint build && git add dist/",
     "start": "webpack-dev-server --env.local"
   },
   "xo": {
-    "env": "jest",
+    "env": [
+      "browser",
+      "jest"
+    ],
     "space": true,
     "rules": {
       "import/default": "off",
@@ -45,21 +48,27 @@
       "max-params": "off",
       "no-multiple-empty-lines": "off",
       "space-before-function-paren": [
-        "error", {"named": "always"}
+        "error",
+        {
+          "named": "always"
+        }
       ],
       "unicorn/filename-case": "off"
     },
-    "globals": ["webpack"],
+    "globals": [
+      "webpack"
+    ],
     "settings": {
       "import/resolver": "webpack"
     },
     "ignores": [
+      "dist/**",
       "jsdoc-theme/**",
       "coverage/**"
     ]
   },
   "dependencies": {
-    "@darkobits/formation": "latest",
+    "@darkobits/formation": "canary",
     "angular": "1.6.x",
     "angular-animate": "1.6.x",
     "angular-messages": "1.6.x",
@@ -79,6 +88,7 @@
     "bourbon": "4.2.x",
     "bourbon-neat": "1.8.x",
     "css-loader": "0.26.x",
+    "eslint": "^3.18.0",
     "eslint-import-resolver-webpack": "^0.8.1",
     "extract-text-webpack-plugin": "2.0.0-rc.3",
     "favicons-webpack-plugin": "0.0.x",
@@ -106,7 +116,7 @@
     "webpack": "2.x",
     "webpack-dev-server": "2.x",
     "webpack-visualizer-plugin": "0.1.x",
-    "xo": "0.17.x",
+    "xo": "^0.17.1",
     "xo-loader": "0.7.x"
   }
 }

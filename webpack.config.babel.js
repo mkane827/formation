@@ -63,7 +63,10 @@ export default env => {
     loader: 'xo-loader',
     options: {
       // Exit on error when compiling.
-      failOnError: env.dist
+      failOnError: env.dist,
+      failOnWarning: env.dist,
+      emitError: env.dist,
+      emitWarning: true
     }
   };
 
